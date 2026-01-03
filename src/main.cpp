@@ -1,4 +1,5 @@
 #include <SFML/Graphics.hpp>
+#include <fstream>
 #include <iostream>
 
 void draw_board(int size, int x, int y);
@@ -11,6 +12,31 @@ struct Cell {
 	int constraints; // bitmask
 	sf::RectangleShape rect;
 };
+
+struct Board {
+	Cell cells[81];
+	int row_constraints[9];
+	int col_constraints[9];
+	int box_constraints[9];
+};
+
+Board Load(const std::string &filename) {
+	std::ifstream file(filename);
+
+	if (!file.is_open()) {
+		std::cerr << "Error loading file " << filename << "\n";
+		exit(1);
+	}
+
+	Board b;
+	std::string line;
+	while (std::getline(file, line)) {
+		if (line.empty())
+			continue;
+		// TODO
+	}
+	return b;
+}
 
 int main() {
 	unsigned int winw{666};
