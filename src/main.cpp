@@ -4,6 +4,13 @@
 void draw_board(int size, int x, int y);
 void init_board(sf::RectangleShape bg,
 				std::array<sf::RectangleShape, 81> &cells);
+struct Cell {
+	int row;
+	int col;
+	// What this cell cannot be
+	int constraints; // bitmask
+	sf::RectangleShape rect;
+};
 
 int main() {
 	unsigned int winw{666};
@@ -13,10 +20,11 @@ int main() {
 	// Drawing some Rectangles
 	std::array<sf::RectangleShape, 81> cells;
 	sf::RectangleShape bg;
-	bg.setPosition({100, 100});
-	bg.setSize({static_cast<float>(cellSize * 9 + 8),
-				static_cast<float>(cellSize * 9 + 8)});
-	bg.setFillColor({255, 240, 240});
+	bg.setPosition({145, 145});
+	bg.setSize({static_cast<float>(cellSize * 9 + 8 * 2 + 20 + 10),
+				static_cast<float>(cellSize * 9 + 8 * 2 + 20 + 10)});
+	bg.setFillColor({75, 60, 60});
+
 	float x{0.0};
 	float y{150.0};
 	for (int row{0}; row < 9; row++) {
@@ -27,6 +35,8 @@ int main() {
 			cells[index].setSize({cellSize, cellSize});
 			cells[index].setPosition({x, y});
 			rectptr->setFillColor({195, 255, 195});
+			// rectptr->setOutlineColor({0, 0, 0});
+			// rectptr->setOutlineThickness(1.0);
 			x += cellSize + 2.0;
 			if (col % 3 == 2)
 				x += 10;
@@ -55,7 +65,7 @@ int main() {
 		// 4. Draw everything
 
 		draw_board(555, 100, 100);
-		// window.draw(bg);
+		window.draw(bg);
 		for (sf::RectangleShape i : cells) {
 			window.draw(i);
 		}
@@ -66,7 +76,33 @@ int main() {
 	return 0;
 }
 
-void draw_board(int size, int x, int y) {}
+void draw_board(float cellSize, float x, float y) {
+	std::array<sf::RectangleShape, 81> cells;
+	sf::RectangleShape bg;
+	bg.setPosition({145, 145});
+	bg.setSize({static_cast<float>(cellSize * 9 + 8 * 2 + 20 + 10),
+				static_cast<float>(cellSize * 9 + 8 * 2 + 20 + 10)});
+	bg.setFillColor({75, 60, 60});
+
+	for (int row{0}; row < 9; row++) {
+		x = 150.0;
+		for (int col{0}; col < 9; col++) {
+			int index{col * 9 + row};
+			sf::RectangleShape *rectptr = &cells[index];
+			cells[index].setSize({cellSize, cellSize});
+			cells[index].setPosition({x, y});
+			rectptr->setFillColor({195, 255, 195});
+			// rectptr->setOutlineColor({0, 0, 0});
+			// rectptr->setOutlineThickness(1.0);
+			x += cellSize + 2.0;
+			if (col % 3 == 2)
+				x += 10;
+		}
+		y += cellSize + 2.0;
+		if (row % 3 == 2)
+			y += 10;
+	}
+}
 
 void init_board(sf::RectangleShape bg,
 				std::array<sf::RectangleShape, 81> &cells) {}
