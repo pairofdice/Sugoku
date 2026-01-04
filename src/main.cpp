@@ -3,7 +3,6 @@
 #include <iostream>
 #include <print>
 
-void draw_board(int size, int x, int y);
 void init_board(sf::RectangleShape bg,
 				std::array<sf::RectangleShape, 81> &cells);
 struct Cell {
@@ -20,7 +19,9 @@ struct Board {
 	int row_constraints[9];
 	int col_constraints[9];
 	int box_constraints[9];
+	bool good;
 };
+void draw_board(Board *board, float size, float x, float y);
 
 Board Load(const std::string &filename) {
 	std::println("Loading file: {}", filename);
@@ -32,6 +33,7 @@ Board Load(const std::string &filename) {
 	}
 
 	Board b;
+	b.good = true;
 	std::string line;
 	int n;
 	int count{0};
@@ -45,23 +47,54 @@ Board Load(const std::string &filename) {
 			count++;
 		}
 	}
-
 	if (count != 81) {
-
 		std::println("Malformed input");
+		b.good = false;
 	}
 	std::println("{}", b.nums);
 	return b;
 }
 
+void SetDigits(std::vector<sf::Text> *digits) {
+	for (int i{0}; i < 10; i++) {
+		digits->at(i).setPosition({100, static_cast<float>(100 + 30 * i)});
+	}
+}
 int main(int argc, char **argv) {
 	unsigned int winw{666};
 	unsigned int winh{666};
 	float cellSize{32};
+	sf::Font font;
+	if (!font.openFromFile("KleeOne-Regular.ttf")) {
+		// error...
+		std::println("Error loading font");
+	}
+	std::vector<sf::Text> digits;
+	for (int i{0}; i < 10; i++) {
+		digits.emplace_back(font, std::to_string(i));
+	}
+	SetDigits(&digits);
+
+	sf::Text text(font); // a font is required to make a text object
+	// set the string to display
+	text.setString("Hello world");
+
+	// set the character size
+	text.setCharacterSize(24); // in pixels, not points!
+
+	// set the color
+	text.setFillColor(sf::Color::Red);
+
+	// set the text style
+	text.setStyle(sf::Text::Bold | sf::Text::Underlined);
 
 	Board board;
 	if (argc == 2)
 		board = Load(argv[1]);
+	if (!board.good) {
+		std::println("Board is bad.");
+		exit(1);
+	}
 
 	// Drawing some Rectangles
 	std::array<sf::RectangleShape, 81> cells;
@@ -110,10 +143,14 @@ int main(int argc, char **argv) {
 
 		// 4. Draw everything
 
-		draw_board(555, 100, 100);
+		draw_board(&board, 5, 100, 100);
 		window.draw(bg);
 		for (sf::RectangleShape i : cells) {
 			window.draw(i);
+		}
+		window.draw(text);
+		for (int i{0}; i < 10; i++) {
+			window.draw(digits.at(i));
 		}
 
 		// 5. Display result
@@ -122,7 +159,7 @@ int main(int argc, char **argv) {
 	return 0;
 }
 
-void draw_board(float cellSize, float x, float y) {
+void draw_board(Board *board, float cellSize, float x, float y) {
 	std::array<sf::RectangleShape, 81> cells;
 	sf::RectangleShape bg;
 	bg.setPosition({145, 145});
