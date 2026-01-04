@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <fstream>
 #include <iostream>
+#include <print>
 
 void draw_board(int size, int x, int y);
 void init_board(sf::RectangleShape bg,
@@ -14,14 +15,16 @@ struct Cell {
 };
 
 struct Board {
-	Cell cells[81];
+	Cell rects[81];
+	int nums[81];
 	int row_constraints[9];
 	int col_constraints[9];
 	int box_constraints[9];
 };
 
 Board Load(const std::string &filename) {
-	std::ifstream file(filename);
+	std::println("Loading file: {}", filename);
+	std::ifstream file("Sudokus\\" + filename);
 
 	if (!file.is_open()) {
 		std::cerr << "Error loading file " << filename << "\n";
@@ -30,18 +33,35 @@ Board Load(const std::string &filename) {
 
 	Board b;
 	std::string line;
-	while (std::getline(file, line)) {
-		if (line.empty())
-			continue;
-		// TODO
+	int n;
+	int count{0};
+	while (file >> n) {
+		if (count > 80) {
+			std::println("Malformed input");
+			break;
+		}
+		if (n >= 0 && n < 10) {
+			b.nums[count] = n;
+			count++;
+		}
 	}
+
+	if (count != 81) {
+
+		std::println("Malformed input");
+	}
+	std::println("{}", b.nums);
 	return b;
 }
 
-int main() {
+int main(int argc, char **argv) {
 	unsigned int winw{666};
 	unsigned int winh{666};
 	float cellSize{32};
+
+	Board board;
+	if (argc == 2)
+		board = Load(argv[1]);
 
 	// Drawing some Rectangles
 	std::array<sf::RectangleShape, 81> cells;
