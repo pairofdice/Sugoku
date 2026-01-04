@@ -58,6 +58,7 @@ Board Load(const std::string &filename) {
 void SetDigits(std::vector<sf::Text> *digits) {
 	for (int i{0}; i < 10; i++) {
 		digits->at(i).setPosition({100, static_cast<float>(100 + 30 * i)});
+		digits->at(i).setFillColor({0, 0, 0});
 	}
 }
 int main(int argc, char **argv) {
@@ -77,7 +78,7 @@ int main(int argc, char **argv) {
 
 	sf::Text text(font); // a font is required to make a text object
 	// set the string to display
-	text.setString("Hello world");
+	text.setString("Hello Sugoku!");
 
 	// set the character size
 	text.setCharacterSize(24); // in pixels, not points!
@@ -143,10 +144,19 @@ int main(int argc, char **argv) {
 
 		// 4. Draw everything
 
-		draw_board(&board, 5, 100, 100);
+		// draw_board(&board, 5, 100, 100);
 		window.draw(bg);
 		for (sf::RectangleShape i : cells) {
 			window.draw(i);
+		}
+		for (int row{0}; row < 9; row++) {
+			for (int col{0}; col < 9; col++) {
+				int index = row * 9 + col;
+				sf::Text *t = &digits.at(board.nums[index]);
+				t->setPosition(cells.at(index).getPosition());
+
+				window.draw(*t);
+			}
 		}
 		window.draw(text);
 		for (int i{0}; i < 10; i++) {
@@ -158,34 +168,35 @@ int main(int argc, char **argv) {
 	}
 	return 0;
 }
-
-void draw_board(Board *board, float cellSize, float x, float y) {
-	std::array<sf::RectangleShape, 81> cells;
-	sf::RectangleShape bg;
-	bg.setPosition({145, 145});
-	bg.setSize({static_cast<float>(cellSize * 9 + 8 * 2 + 20 + 10),
-				static_cast<float>(cellSize * 9 + 8 * 2 + 20 + 10)});
-	bg.setFillColor({75, 60, 60});
-
-	for (int row{0}; row < 9; row++) {
-		x = 150.0;
-		for (int col{0}; col < 9; col++) {
-			int index{col * 9 + row};
-			sf::RectangleShape *rectptr = &cells[index];
-			cells[index].setSize({cellSize, cellSize});
-			cells[index].setPosition({x, y});
-			rectptr->setFillColor({195, 255, 195});
-			// rectptr->setOutlineColor({0, 0, 0});
-			// rectptr->setOutlineThickness(1.0);
-			x += cellSize + 2.0;
-			if (col % 3 == 2)
-				x += 10;
-		}
-		y += cellSize + 2.0;
-		if (row % 3 == 2)
-			y += 10;
-	}
-}
+//
+// void draw_board(Board *board, std::vector<sf::Text> digits, float cellSize,
+// 				float x, float y) {
+// 	std::array<sf::RectangleShape, 81> cells;
+// 	sf::RectangleShape bg;
+// 	bg.setPosition({145, 145});
+// 	bg.setSize({static_cast<float>(cellSize * 9 + 8 * 2 + 20 + 10),
+// 				static_cast<float>(cellSize * 9 + 8 * 2 + 20 + 10)});
+// 	bg.setFillColor({75, 60, 60});
+//
+// 	for (int row{0}; row < 9; row++) {
+// 		x = 150.0;
+// 		for (int col{0}; col < 9; col++) {
+// 			int index{col * 9 + row};
+// 			sf::RectangleShape *rectptr = &cells[index];
+// 			cells[index].setSize({cellSize, cellSize});
+// 			cells[index].setPosition({x, y});
+// 			rectptr->setFillColor({195, 255, 195});
+// 			// rectptr->setOutlineColor({0, 0, 0});
+// 			// rectptr->setOutlineThickness(1.0);
+// 			x += cellSize + 2.0;
+// 			if (col % 3 == 2)
+// 				x += 10;
+// 		}
+// 		y += cellSize + 2.0;
+// 		if (row % 3 == 2)
+// 			y += 10;
+// 	}
+// }
 
 void init_board(sf::RectangleShape bg,
 				std::array<sf::RectangleShape, 81> &cells) {}
