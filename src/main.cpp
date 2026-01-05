@@ -6,10 +6,11 @@
 // TODO
 // Toggle to show freedoms
 // propagate constraints
-// Selection of a square
+// Selection/highlighting of a square
 // popup 3x3 number selector
 // Error checking
 // 'Manual' solving
+// Search needs to order traversal so the least free cells are prioritized
 // Subtle Hint system based on the manual solving methods
 // Stylize, perhaps model some assets in Blender
 // Animations?
@@ -21,6 +22,11 @@
 // themselves?
 // VSync and other settings
 // Keyboard/Mouse mappings
+// Networking/Server/Other dangerous things?
+// Make it comfy
+// Add some splash, a bit of kinetics, oomph. Sudoku needs oomph
+// How do you make Sudoku to look and feel good and solid?
+// Don't worry about code quality just work on it
 
 void init_board(sf::RectangleShape bg,
 				std::array<sf::RectangleShape, 81> &cells);
