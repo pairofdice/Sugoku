@@ -3,6 +3,25 @@
 #include <iostream>
 #include <print>
 
+// TODO
+// Toggle to show freedoms
+// propagate constraints
+// Selection of a square
+// popup 3x3 number selector
+// Error checking
+// 'Manual' solving
+// Subtle Hint system based on the manual solving methods
+// Stylize, perhaps model some assets in Blender
+// Animations?
+// Proper calculations for board size and position
+// Fix digit positions
+// OCR capture of puzzles?
+// Internet puzzle databases?
+// Scoring? Supremely easy to game but maybe for those who don't cheat
+// themselves?
+// VSync and other settings
+// Keyboard/Mouse mappings
+
 void init_board(sf::RectangleShape bg,
 				std::array<sf::RectangleShape, 81> &cells);
 struct Cell {
@@ -154,14 +173,11 @@ int main(int argc, char **argv) {
 				int index = row * 9 + col;
 				sf::Text *t = &digits.at(board.nums[index]);
 				t->setPosition(cells.at(index).getPosition());
-
-				window.draw(*t);
+				if (board.nums[index] != 0)
+					window.draw(*t);
 			}
 		}
 		window.draw(text);
-		for (int i{0}; i < 10; i++) {
-			window.draw(digits.at(i));
-		}
 
 		// 5. Display result
 		window.display();
