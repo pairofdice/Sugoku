@@ -1,4 +1,5 @@
-#include <SFML/Graphics.hpp>
+#include "sugoku.h"
+// #include <SFML/Graphics.hpp>
 #include <fstream>
 #include <iostream>
 #include <print>
@@ -30,23 +31,6 @@
 
 void init_board(sf::RectangleShape bg,
 				std::array<sf::RectangleShape, 81> &cells);
-struct Cell {
-	int row;
-	int col;
-	// What this cell cannot be
-	int constraints; // bitmask
-	sf::RectangleShape rect;
-};
-
-struct Board {
-	Cell rects[81];
-	int nums[81];
-	int row_constraints[9];
-	int col_constraints[9];
-	int box_constraints[9];
-	bool good;
-};
-void draw_board(Board *board, float size, float x, float y);
 
 Board Load(const std::string &filename) {
 	std::println("Loading file: {}", filename);
