@@ -5,6 +5,7 @@
 #include <print>
 
 // TODO
+// Sudoku
 // Toggle to show freedoms
 // propagate constraints
 // Selection/highlighting of a square
@@ -29,40 +30,16 @@
 // How do you make Sudoku to look and feel good and solid?
 // Don't worry about code quality just work on it
 
-void init_board(sf::RectangleShape bg,
-				std::array<sf::RectangleShape, 81> &cells);
+// Go
+// Draw board, 19x19
+// place stones, white and black. Turns
+// capture groups
+// timer
+// Undo a move
+// play through the game history
+// ...
 
-Board Load(const std::string &filename) {
-	std::println("Loading file: {}", filename);
-	std::ifstream file("Sudokus\\" + filename);
-
-	if (!file.is_open()) {
-		std::cerr << "Error loading file " << filename << "\n";
-		exit(1);
-	}
-
-	Board b;
-	b.good = true;
-	std::string line;
-	int n;
-	int count{0};
-	while (file >> n) {
-		if (count > 80) {
-			std::println("Malformed input");
-			break;
-		}
-		if (n >= 0 && n < 10) {
-			b.nums[count] = n;
-			count++;
-		}
-	}
-	if (count != 81) {
-		std::println("Malformed input");
-		b.good = false;
-	}
-	std::println("{}", b.nums);
-	return b;
-}
+// Switch between Sudoku, Go and other games; minesweeper/starbattle/etc.
 
 void SetDigits(std::vector<sf::Text> *digits) {
 	for (int i{0}; i < 10; i++) {

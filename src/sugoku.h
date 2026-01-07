@@ -3,6 +3,11 @@
 
 #include <SFML/Graphics.hpp>
 
+enum Game {
+	Sudoku,
+	Go,
+};
+
 struct Cell {
 	int row;
 	int col;
@@ -11,7 +16,7 @@ struct Cell {
 	sf::RectangleShape rect;
 };
 
-struct Board {
+struct BoardS {
 	Cell rects[81];
 	int nums[81];
 	int row_constraints[9];
@@ -19,9 +24,18 @@ struct Board {
 	int box_constraints[9];
 	bool good;
 };
-void draw_board(Board *board, float size, float x, float y);
+
+struct BoardG {};
+
+struct state {
+	Game game;
+	BoardS Sudoku;
+};
+
+void draw_board(BoardS *board, float size, float x, float y);
 void draw_freedoms();
 void init_board(sf::RectangleShape bg,
 				std::array<sf::RectangleShape, 81> &cells);
+BoardS Load(const std::string &filename);
 
 #endif
