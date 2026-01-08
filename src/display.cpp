@@ -3,7 +3,7 @@
 #include <iostream>
 #include <print>
 
-Board Load(const std::string &filename) {
+BoardS Load(const std::string &filename) {
 	std::println("Loading file: {}", filename);
 	std::ifstream file("Sudokus\\" + filename);
 
@@ -12,7 +12,7 @@ Board Load(const std::string &filename) {
 		exit(1);
 	}
 
-	Board b;
+	BoardS b;
 	b.good = true;
 	std::string line;
 	int n;

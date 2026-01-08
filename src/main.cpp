@@ -43,10 +43,14 @@
 
 void SetDigits(std::vector<sf::Text> *digits) {
 	for (int i{0}; i < 10; i++) {
+
 		digits->at(i).setPosition({100, static_cast<float>(100 + 30 * i)});
 		digits->at(i).setFillColor({0, 0, 0});
+		sf::FloatRect bounds = digits->at(i).getLocalBounds();
+		digits->at(i).setOrigin(bounds.getCenter());
 	}
 }
+
 int main(int argc, char **argv) {
 	unsigned int winw{666};
 	unsigned int winh{666};
@@ -75,7 +79,7 @@ int main(int argc, char **argv) {
 	// set the text style
 	text.setStyle(sf::Text::Bold | sf::Text::Underlined);
 
-	Board board;
+	BoardS board;
 	if (argc == 2)
 		board = Load(argv[1]);
 	if (!board.good) {
@@ -139,7 +143,8 @@ int main(int argc, char **argv) {
 			for (int col{0}; col < 9; col++) {
 				int index = row * 9 + col;
 				sf::Text *t = &digits.at(board.nums[index]);
-				t->setPosition(cells.at(index).getPosition());
+				t->setPosition(cells.at(index).getPosition() +
+							   cells.at(index).getSize() / 2.f);
 				if (board.nums[index] != 0)
 					window.draw(*t);
 			}
