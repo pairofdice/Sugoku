@@ -17,7 +17,6 @@
 // Stylize, perhaps model some assets in Blender
 // Animations?
 // Proper calculations for board size and position
-// Fix digit positions
 // OCR capture of puzzles?
 // Internet puzzle databases?
 // Scoring? Supremely easy to game but maybe for those who don't cheat
@@ -44,10 +43,10 @@
 void SetDigits(std::vector<sf::Text> *digits) {
 	for (int i{0}; i < 10; i++) {
 
-		digits->at(i).setPosition({100, static_cast<float>(100 + 30 * i)});
+		digits->at(i).setPosition({100, static_cast<float>(68 + 30 * i)});
 		digits->at(i).setFillColor({0, 0, 0});
 		sf::FloatRect bounds = digits->at(i).getLocalBounds();
-		digits->at(i).setOrigin(bounds.getCenter());
+		// digits->at(i).setOrigin(bounds.getCenter());
 	}
 }
 
@@ -120,7 +119,9 @@ int main(int argc, char **argv) {
 	sf::RenderWindow window(sf::VideoMode({winw, winh}),
 							"Do we have a window?");
 
+	int frame{};
 	while (window.isOpen()) {
+		frame++;
 		// 1. Handle events
 		while (const std::optional event = window.pollEvent()) {
 			if (event->is<sf::Event::Closed>())
@@ -139,14 +140,50 @@ int main(int argc, char **argv) {
 		for (sf::RectangleShape i : cells) {
 			window.draw(i);
 		}
+
 		for (int row{0}; row < 9; row++) {
 			for (int col{0}; col < 9; col++) {
 				int index = row * 9 + col;
 				sf::Text *t = &digits.at(board.nums[index]);
-				t->setPosition(cells.at(index).getPosition() +
-							   cells.at(index).getSize() / 2.f);
-				if (board.nums[index] != 0)
+				t->setCharacterSize(30);
+				t->setPosition(
+					cells.at(index).getPosition() +
+					sf::Vector2{6.f,
+								-3.f}); // - cells.at(index).getSize() / 2.f);
+				if (board.nums[index] == 0) {
+					for (int i{1}; i < 10; i++) {
+
+						if (!board.cells[index].freedoms && 1 << i) {
+
+							t = &digits.at(i);
+							t->setPosition(cells.at(index).getPosition() +
+										   cells.at(index).getSize() / 2.f);
+
+							int freedom_row = (i - 1) / 3;
+							int freedom_col = (i - 1) % 3;
+
+							sf::Vector2<float> freedom_pos = {
+								cells.at(index).getSize().x * freedom_col *
+										0.3f -
+									14.f,
+								cells.at(index).getSize().y * freedom_row *
+										0.3f -
+									18.f};
+
+							t->setPosition(t->getPosition() + freedom_pos);
+							t->setCharacterSize(13);
+							window.draw(*t);
+							if (index == 1 && frame == 1) {
+								std::println(
+									"FREEDOM! y: {}, x:{}, posx: {}, posy: {}",
+									freedom_col, freedom_row, freedom_pos.x,
+									freedom_pos.y);
+							}
+						}
+					}
+				} else {
 					window.draw(*t);
+				}
 			}
 		}
 		window.draw(text);
@@ -188,3 +225,6 @@ int main(int argc, char **argv) {
 
 void init_board(sf::RectangleShape bg,
 				std::array<sf::RectangleShape, 81> &cells) {}
+
+// TODONE
+// Fix digit positions

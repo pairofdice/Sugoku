@@ -14,10 +14,11 @@ struct Cell {
 	// What this cell cannot be
 	int constraints; // bitmask
 	sf::RectangleShape rect;
+	int freedoms{0};
 };
 
 struct BoardS {
-	Cell rects[81];
+	Cell cells[81];
 	int nums[81];
 	int row_constraints[9];
 	int col_constraints[9];
