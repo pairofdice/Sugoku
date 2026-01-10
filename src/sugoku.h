@@ -20,10 +20,14 @@ struct Cell {
 struct BoardS {
 	Cell cells[81];
 	int nums[81];
-	int row_constraints[9];
-	int col_constraints[9];
-	int box_constraints[9];
+	// int row_constraints[9]{0};
+	// int col_constraints[9];
+	// int box_constraints[9];
 	bool good;
+	bool displayFreedoms{0};
+
+	// Oh, structs can have constructors and stuff
+	// BoardS(bool h) : displayFreedoms(h) {}
 };
 
 struct BoardG {};

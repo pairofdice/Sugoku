@@ -6,7 +6,6 @@
 
 // TODO
 // Sudoku
-// Toggle to show freedoms
 // propagate constraints
 // Selection/highlighting of a square
 // popup 3x3 number selector
@@ -126,6 +125,20 @@ int main(int argc, char **argv) {
 		while (const std::optional event = window.pollEvent()) {
 			if (event->is<sf::Event::Closed>())
 				window.close();
+			if (const auto *keyPressed =
+					event->getIf<sf::Event::KeyPressed>()) {
+
+				if (keyPressed->scancode == sf::Keyboard::Scan::Escape) {
+					window.close();
+				}
+				if (keyPressed->scancode == sf::Keyboard::Scan::F) {
+					std::println("F was pressed!");
+					if (board.displayFreedoms == 1)
+						board.displayFreedoms = 0;
+					else
+						board.displayFreedoms = 1;
+				}
+			}
 		}
 
 		// 2. Update game state
@@ -141,6 +154,8 @@ int main(int argc, char **argv) {
 			window.draw(i);
 		}
 
+		if (frame % 100 == 0)
+			std::println("board.displayFreedoms {}", board.displayFreedoms);
 		for (int row{0}; row < 9; row++) {
 			for (int col{0}; col < 9; col++) {
 				int index = row * 9 + col;
@@ -151,33 +166,36 @@ int main(int argc, char **argv) {
 					sf::Vector2{6.f,
 								-3.f}); // - cells.at(index).getSize() / 2.f);
 				if (board.nums[index] == 0) {
-					for (int i{1}; i < 10; i++) {
+					if (board.displayFreedoms == 0) {
 
-						if (!board.cells[index].freedoms && 1 << i) {
+						for (int i{1}; i < 10; i++) {
 
-							t = &digits.at(i);
-							t->setPosition(cells.at(index).getPosition() +
-										   cells.at(index).getSize() / 2.f);
+							if (!board.cells[index].freedoms && 1 << i) {
 
-							int freedom_row = (i - 1) / 3;
-							int freedom_col = (i - 1) % 3;
+								t = &digits.at(i);
+								t->setPosition(cells.at(index).getPosition() +
+											   cells.at(index).getSize() / 2.f);
 
-							sf::Vector2<float> freedom_pos = {
-								cells.at(index).getSize().x * freedom_col *
-										0.3f -
-									14.f,
-								cells.at(index).getSize().y * freedom_row *
-										0.3f -
-									18.f};
+								int freedom_row = (i - 1) / 3;
+								int freedom_col = (i - 1) % 3;
 
-							t->setPosition(t->getPosition() + freedom_pos);
-							t->setCharacterSize(13);
-							window.draw(*t);
-							if (index == 1 && frame == 1) {
-								std::println(
-									"FREEDOM! y: {}, x:{}, posx: {}, posy: {}",
-									freedom_col, freedom_row, freedom_pos.x,
-									freedom_pos.y);
+								sf::Vector2<float> freedom_pos = {
+									cells.at(index).getSize().x * freedom_col *
+											0.3f -
+										14.f,
+									cells.at(index).getSize().y * freedom_row *
+											0.3f -
+										18.f};
+
+								t->setPosition(t->getPosition() + freedom_pos);
+								t->setCharacterSize(13);
+								window.draw(*t);
+								if (index == 1 && frame == 1) {
+									std::println("FREEDOM! y: {}, x:{}, posx: "
+												 "{}, posy: {}",
+												 freedom_col, freedom_row,
+												 freedom_pos.x, freedom_pos.y);
+								}
 							}
 						}
 					}
@@ -228,3 +246,5 @@ void init_board(sf::RectangleShape bg,
 
 // TODONE
 // Fix digit positions
+// Show freedoms
+// Toggle to show freedoms
