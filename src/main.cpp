@@ -39,6 +39,31 @@
 
 // Switch between Sudoku, Go and other games; minesweeper/starbattle/etc.
 
+int threebythree_to_index(int row, int col) {
+	int result{0};
+	result += row * 3;
+	result += col;
+	return result;
+}
+
+void propagate_constraints_cell(BoardS *b, int index, int num) {
+	int bit = 1 << num;
+	Cell c = b->cells[index];
+	b->row_constraints[c.row] |= bit;
+	b->col_constraints[c.col] |= bit;
+	b->box_constraints[threebythree_to_index(c.row, c.col)] |= bit;
+}
+
+void propagate_constraints_all(BoardS *sdk) {
+	int *numbers = sdk->nums;
+	for (int i{0}; i < 81; i++) {
+		if (numbers[i] != 0) {
+			propagate_constraints_cell(sdk, i, numbers[i]);
+		}
+	}
+	// now pull constraints for each unmarked cell from the rows/cols/boxes
+}
+
 void SetDigits(std::vector<sf::Text> *digits) {
 	for (int i{0}; i < 10; i++) {
 
@@ -85,6 +110,7 @@ int main(int argc, char **argv) {
 		exit(1);
 	}
 
+	propagate_constraints_all(&board);
 	// Drawing some Rectangles
 	std::array<sf::RectangleShape, 81> cells;
 	sf::RectangleShape bg;
@@ -142,6 +168,7 @@ int main(int argc, char **argv) {
 		}
 
 		// 2. Update game state
+		propagate_constraints_all(&board);
 
 		// 3. Clear the scree
 		window.clear();
@@ -154,8 +181,6 @@ int main(int argc, char **argv) {
 			window.draw(i);
 		}
 
-		if (frame % 100 == 0)
-			std::println("board.displayFreedoms {}", board.displayFreedoms);
 		for (int row{0}; row < 9; row++) {
 			for (int col{0}; col < 9; col++) {
 				int index = row * 9 + col;
