@@ -6,6 +6,7 @@
 
 // TODO
 // Sudoku
+// A lot of nonsense going on, set the row and col correctly on init
 // propagate constraints
 // Selection/highlighting of a square
 // popup 3x3 number selector
@@ -46,6 +47,9 @@ int threebythree_to_index(int row, int col) {
 	return result;
 }
 
+int index_to_row(int i) { return i; }
+int index_to_col(int i) { return i; }
+
 void propagate_constraints_cell(BoardS *b, int index, int num) {
 	int bit = 1 << num;
 	Cell c = b->cells[index];
@@ -62,6 +66,15 @@ void propagate_constraints_all(BoardS *sdk) {
 		}
 	}
 	// now pull constraints for each unmarked cell from the rows/cols/boxes
+	Cell *c;
+	for (int i{0}; i < 81; i++) {
+		if (numbers[i] == 0) {
+			// c->constraints |= sdk->row_constraints[c->row];
+			// c->constraints |= sdk->col_constraints[c->col];
+			// c->constraints |=
+			// 	sdk->box_constraints[threebythree_to_index(c->row, c->col)];
+		}
+	}
 }
 
 void SetDigits(std::vector<sf::Text> *digits) {
@@ -129,6 +142,9 @@ int main(int argc, char **argv) {
 			cells[index].setSize({cellSize, cellSize});
 			cells[index].setPosition({x, y});
 			rectptr->setFillColor({195, 255, 195});
+			board.cells[index].row = row;
+			board.cells[index].col = col;
+
 			// rectptr->setOutlineColor({0, 0, 0});
 			// rectptr->setOutlineThickness(1.0);
 			x += cellSize + 2.0;
@@ -144,6 +160,10 @@ int main(int argc, char **argv) {
 	sf::RenderWindow window(sf::VideoMode({winw, winh}),
 							"Do we have a window?");
 
+	auto c1 = board.cells[0];
+	auto c2 = board.cells[2];
+	std::println("0.col {}, 0.row {}", c1.col, c1.row);
+	std::println("0.col {}, 0.row {}", c1.col, c1.row);
 	int frame{};
 	while (window.isOpen()) {
 		frame++;
