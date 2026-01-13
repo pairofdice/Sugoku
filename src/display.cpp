@@ -26,6 +26,8 @@ BoardS Load(const std::string &filename) {
 			b.nums[count] = n;
 			count++;
 		}
+		// b.cells[count].col = count % 9;
+		// b.cells[count].row = count / 9;
 	}
 	if (count != 81) {
 		std::println("Malformed input");
