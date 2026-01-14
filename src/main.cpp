@@ -102,6 +102,19 @@ int main(int argc, char **argv) {
 	}
 	SetDigits(&digits);
 
+	sf::Text text(font); // a font is required to make a text object
+	// set the string to display
+	text.setString("Hello Sugoku!");
+
+	// set the character size
+	text.setCharacterSize(24); // in pixels, not points!
+
+	// set the color
+	text.setFillColor(sf::Color::Red);
+
+	// set the text style
+	text.setStyle(sf::Text::Bold | sf::Text::Underlined);
+
 	BoardS board;
 	if (argc == 2)
 		board = Load(argv[1]);
@@ -110,7 +123,6 @@ int main(int argc, char **argv) {
 		exit(1);
 	}
 
-	// propagate_constraints_all(&board);
 	// Drawing some Rectangles
 	std::array<sf::RectangleShape, 81> cells;
 	sf::RectangleShape bg;
@@ -129,8 +141,8 @@ int main(int argc, char **argv) {
 			cells[index].setSize({cellSize, cellSize});
 			cells[index].setPosition({x, y});
 			rectptr->setFillColor({195, 255, 195});
-			// board.cells[index].row = row;
-			// board.cells[index].col = col;
+			board.cells[index].row = row;
+			board.cells[index].col = col;
 
 			// rectptr->setOutlineColor({0, 0, 0});
 			// rectptr->setOutlineThickness(1.0);
@@ -146,12 +158,12 @@ int main(int argc, char **argv) {
 	std::cout << "Hello, Sugoku!\n";
 	sf::RenderWindow window(sf::VideoMode({winw, winh}),
 							"Do we have a window?");
-	window.setFramerateLimit(60);
 
-	// auto c1 = board.cells[9];
-	// auto c2 = board.cells[11];
-	// std::println("1.col {}, 1.row {}", c1.col, c1.row);
-	// std::println("2.col {}, 2.row {}", c2.col, c2.row);
+	window.setFramerateLimit(60);
+	auto c1 = board.cells[0];
+	auto c2 = board.cells[2];
+	std::println("0.col {}, 0.row {}", c1.col, c1.row);
+	std::println("0.col {}, 0.row {}", c1.col, c1.row);
 	int frame{};
 	while (window.isOpen()) {
 		frame++;
@@ -176,7 +188,6 @@ int main(int argc, char **argv) {
 		}
 
 		// 2. Update game state
-		propagate_constraints_all(&board);
 
 		// 3. Clear the scree
 		window.clear();
@@ -224,53 +235,31 @@ int main(int argc, char **argv) {
 								t->setCharacterSize(13);
 								window.draw(*t);
 								if (index == 1 && frame == 1) {
+									std::println("FREEDOM! y: {}, x:{}, posx: "
+												 "{}, posy: {}",
+												 freedom_col, freedom_row,
+												 freedom_pos.x, freedom_pos.y);
 								}
 							}
 						}
-					} else {
-						window.draw(*t);
 					}
+				} else {
+					window.draw(*t);
 				}
 			}
-
-			// 5. Display result
-			window.display();
 		}
-		return 0;
+		window.draw(text);
+
+		// 5. Display result
+		window.display();
 	}
-	//
-	// void draw_board(Board *board, std::vector<sf::Text> digits, float
-	// cellSize, 				float x, float y) { 	std::array<sf::RectangleShape, 81> cells;
-	// 	sf::RectangleShape bg;
-	// 	bg.setPosition({145, 145});
-	// 	bg.setSize({static_cast<float>(cellSize * 9 + 8 * 2 + 20 + 10),
-	// 				static_cast<float>(cellSize * 9 + 8 * 2 + 20 + 10)});
-	// 	bg.setFillColor({75, 60, 60});
-	//
-	// 	for (int row{0}; row < 9; row++) {
-	// 		x = 150.0;
-	// 		for (int col{0}; col < 9; col++) {
-	// 			int index{col * 9 + row};
-	// 			sf::RectangleShape *rectptr = &cells[index];
-	// 			cells[index].setSize({cellSize, cellSize});
-	// 			cells[index].setPosition({x, y});
-	// 			rectptr->setFillColor({195, 255, 195});
-	// 			// rectptr->setOutlineColor({0, 0, 0});
-	// 			// rectptr->setOutlineThickness(1.0);
-	// 			x += cellSize + 2.0;
-	// 			if (col % 3 == 2)
-	// 				x += 10;
-	// 		}
-	// 		y += cellSize + 2.0;
-	// 		if (row % 3 == 2)
-	// 			y += 10;
-	// 	}
-	// }
+	return 0;
+}
 
-	void init_board(sf::RectangleShape bg,
-					std::array<sf::RectangleShape, 81> & cells) {}
+void init_board(sf::RectangleShape bg,
+				std::array<sf::RectangleShape, 81> &cells) {}
 
-	// TODONE
-	// Fix digit positions
-	// Show freedoms
-	// Toggle to show freedoms
+// TODONE
+// Fix digit positions
+// Show freedoms
+// Toggle to show freedoms
